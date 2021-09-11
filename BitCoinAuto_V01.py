@@ -66,8 +66,9 @@ print("autotrade start")
 while True:
     try:
         now = datetime.datetime.now()
-        start_time = get_start_time("KRW-OMG") - datetime.timedelta(hours=4)  #05:00
-        end_time = start_time  #17:00 
+        # start_time = get_start_time("KRW-OMG") - datetime.timedelta(hours=4)  #05:00
+        start_time = get_start_time("KRW-OMG")   #0:00
+        end_time = start_time + datetime.timedelta(hours=9)  #18:00 
         schedule.run_pending()
         target_price = get_target_price("KRW-OMG", 0.2)
         current_price = get_current_price("KRW-OMG")
@@ -79,7 +80,7 @@ while True:
         print("현재시간",now,"수익률:",(1-upbit.get_avg_buy_price('KRW-OMG')/current_price)*100,"%")
         
             # 05:00~16:59 에 예측가격과 변동성돌파 조건에 만족하면 70% 매수 한다.
-        if start_time < now < end_time - datetime.timedelta(seconds=60): #05:00~16:59
+        if start_time < now < end_time - datetime.timedelta(seconds=60): #09:00~17:59
             # print("주간 매수")                            
             
             if target_price < current_price : #17시 예상가격보다 낮으면 매수
@@ -91,17 +92,18 @@ while True:
             
             if upbit.get_avg_buy_price('KRW-OMG')*1.05 < current_price :
                 btc = get_balance("BTC-OMG")
+
                 if btc > 0.00008:
                      upbit.sell_market_order("KRW-OMG", btc)
                      print("익절 횟수:",b) 
                      b+1
                    
 
-        else: # 17:00 ~ 04:59 까지 
+        else: # 18:00 ~ 08:59 까지 
             # print("야간 매수") 
           
             
-            if c<2 and upbit.get_avg_buy_price('KRW-OMG') > 100 and current_price < upbit.get_avg_buy_price('KRW-OMG') * 0.95 : # 17시까지 수익 못본상태에서 -5%되면 추매(1/3) 
+            if c<2 and upbit.get_avg_buy_price('KRW-OMG') > 100 and current_price < upbit.get_avg_buy_price('KRW-OMG') * 0.95 : # 18시까지 수익 못본상태에서 -5%되면 추매(1/3) 
                 krw = get_balance("KRW")
                 if krw > 15000:
                     upbit.buy_market_order("KRW-OMG", (krw/3)*0.9995) 
@@ -110,7 +112,7 @@ while True:
                     print(c)
 
            
-            if d<2 and upbit.get_avg_buy_price('KRW-OMG') > 100 and current_price < upbit.get_avg_buy_price('KRW-OMG') * 0.90 : # 17시까지 수익 못본상태에서 -10%되면 추매(All) 
+            if d<2 and upbit.get_avg_buy_price('KRW-OMG') > 100 and current_price < upbit.get_avg_buy_price('KRW-OMG') * 0.90 : # 18시까지 수익 못본상태에서 -10%되면 추매(All) 
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-OMG", krw*0.9995) 
