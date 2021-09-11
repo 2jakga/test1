@@ -4,17 +4,17 @@ import datetime
 import schedule
 #from fbprophet import Prophet
 
-keyin = input("Start (Y/N) : ")
-y=keyin
-print(keyin)
-if keyin == "Y" or "y":
-  print("loading....")
+#keyin = input("Start (Y/N) : ")
+#y=keyin
+#print(keyin)
+#if keyin == "Y" or "y":
+#  print("loading....")
 
 access = "m0uV5VEpMw9uNrvDlxUXvahxvYYG2O3KGNW3vRsJ"
 secret = "iRmSf6ovpVTpSzPnyxDLYEMcvKYmbsPo9QE8gQuw"
 
-itemname = "KRW-OMG"
-Kvalue = 0.2
+#itemname = "KRW-OMG"
+#Kvalue = 0.2
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
