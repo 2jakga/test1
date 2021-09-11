@@ -4,6 +4,12 @@ import datetime
 import schedule
 #from fbprophet import Prophet
 
+keyin = input("Start (Y/N) : ")
+y=keyin
+print(keyin)
+if keyin == "Y" or "y":
+  print("loading....")
+
 access = "m0uV5VEpMw9uNrvDlxUXvahxvYYG2O3KGNW3vRsJ"
 secret = "iRmSf6ovpVTpSzPnyxDLYEMcvKYmbsPo9QE8gQuw"
 
@@ -39,7 +45,7 @@ def get_current_price(ticker):
 
 
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start - V3 210911 ")
+print("autotrade start - V4 210912 ")
 a=1
 b=1
 c=1
