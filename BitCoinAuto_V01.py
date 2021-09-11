@@ -59,7 +59,7 @@ def get_current_price(ticker):
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start")
+print("autotrade start - V2 210911 ")
 
 
 # 자동매매 시작
