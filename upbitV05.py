@@ -4,17 +4,18 @@ import datetime
 import schedule
 #from fbprophet import Prophet
 
-#keyin = input("Start (Y/N) : ")
-#y=keyin
-#print(keyin)
-#if keyin == "Y" or "y":
-#  print("loading....")
+# keyin = input("Start (Y/N) : ")
+# y=keyin
+# print(keyin)
+# if keyin == "Y" or "y":
+#   print("loading....")
 
 access = "m0uV5VEpMw9uNrvDlxUXvahxvYYG2O3KGNW3vRsJ"
 secret = "iRmSf6ovpVTpSzPnyxDLYEMcvKYmbsPo9QE8gQuw"
 
-#itemname = "KRW-OMG"
-#Kvalue = 0.2
+coinname = 'KRW-OMG'
+coin = 'OMG'
+Kvalue = 0.2
 
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -45,7 +46,7 @@ def get_current_price(ticker):
 
 
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start - V4 210912 ")
+print("autotrade start - V5 210912 ")
 a=1
 b=1
 c=1
@@ -59,49 +60,53 @@ while True:
         start_time = get_start_time("KRW-BTC")
         end_time = start_time + datetime.timedelta(days=1)
         schedule.run_pending()
-        target_price = get_target_price("KRW-OMG", 0.3)
-        current_price = get_current_price("KRW-OMG")
+        target_price = get_target_price(coinname, Kvalue)
+        current_price = get_current_price(coinname)
         krw = get_balance("KRW")
         
         print(target_price, current_price)        
-        print("현재시간",now,"수익률:",(1-upbit.get_avg_buy_price('KRW-OMG')/current_price)*100,"%")
+        print("현재시간",now,"수익률:",(1-upbit.get_avg_buy_price(coinname)/current_price)*100,"%")
                     
         if start_time < now < end_time - datetime.timedelta(seconds=60): #09:00~17:59
             if target_price < current_price : #예상가격이 현재가격보다 낮으면 매수 (상승신호 간주)
                 if krw > 5000:                 
                      if a<2:                
-                        upbit.buy_market_order("KRW-OMG", krw*0.6*0.9995) #보유금의 60% 매수 (수수로 감안)
-                        print(a,"매수 평균단가:",upbit.get_avg_buy_price('KRW-OMG')) 
+                        upbit.buy_market_order(coinname, krw*0.6*0.9995) #보유금의 60% 매수 (수수로 감안)
+                        print(a,"매수 평균단가:",upbit.get_avg_buy_price(coinname)) 
                         a=a+1
 
         
-        if upbit.get_avg_buy_price('KRW-OMG')*1.05 < current_price :
-            btc = get_balance("OMG")
+        if upbit.get_avg_buy_price(coinname)*1.05 < current_price :
+            btc = get_balance(coin)
             print(btc)
             if btc > 0.00008:
-             upbit.sell_market_order("KRW-OMG", btc)
+             upbit.sell_market_order(coinname, btc)
              a=0
              print("익절") 
               
             
-        if upbit.get_avg_buy_price('KRW-OMG')*0.95 > current_price : # -5% 1차 추매 
+        if upbit.get_avg_buy_price(coinname)*0.95 > current_price : # -5% 1차 추매 
             if krw > 5000:
                 if c<2: 
-                    upbit.buy_market_order("KRW-OMG", krw*0.4*0.9995) 
+                    upbit.buy_market_order(coinname, krw*0.4*0.9995) 
                     print("1차 추가 매수")
                     c=c+1
                     
-        if upbit.get_avg_buy_price('KRW-OMG')*0.9 > current_price : #  -10% 2차 추매
+        if upbit.get_avg_buy_price(coinname)*0.9 > current_price : #  -10% 2차 추매
             if krw > 5000:
                 if b<2: 
-                    upbit.buy_market_order("KRW-OMG", krw*0.9995) 
+                    upbit.buy_market_order(coinname, krw*0.9995) 
                     print("2차 추가 매수")
                     b=b+1            
 
-        if upbit.get_avg_buy_price('KRW-OMG')*0.87 > current_price : # -13%되면 손절 
+        if upbit.get_avg_buy_price(coinname)*0.87 > current_price : # -13%되면 손절 
             if btc > 0.00008:
-             upbit.sell_market_order("KRW-OMG", btc)
-             print("익절")              
+             upbit.sell_market_order(coinname, btc)
+             a=3
+             print("손절")              
+        
+        if a>2 and upbit.get_avg_buy_price(coinname) > 100:  #손절 후 직접 매수하기 전 까지 추가 매수 안함 
+            a=0
                  
         time.sleep(1)
     except Exception as e:
