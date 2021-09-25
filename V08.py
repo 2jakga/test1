@@ -57,7 +57,7 @@ def rsi(ohlc: pandas.DataFrame, period: int = 14):
 access = "m0uV5VEpMw9uNrvDlxUXvahxvYYG2O3KGNW3vRsJ"
 secret = "iRmSf6ovpVTpSzPnyxDLYEMcvKYmbsPo9QE8gQuw"
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start - V7 210919 ")
+print("autotrade start - V8 210925 ")
 
 
 print("보유 현금 :",get_balance("KRW"))
@@ -153,7 +153,12 @@ while(True):
                             print([i], coinlist[i],"  RSI :", now_rsi) 
                             # print("현재시간: ", datetime.datetime.now()) 
                             print()
-                                                    
+
+
+                            if upbit.get_avg_buy_price(coinlist[i])*1.03 < current_price and upbit.get_balance(coinlist[i]) > 0.00008:
+                                upbit.sell_market_order(coinlist[i], upbit.get_balance(coinlist[i]))     
+                                print("3% 익절 완료")  
+
                             if now_rsi <= 40 : 
                                 RSI28[i] = True
                                 print(coinlist[i],"RSI 28 Check")
@@ -163,7 +168,7 @@ while(True):
                                 buy(coinlist[i])                        
                                 RSI28[i] = False                                                                               
                             
-                            if now_rsi >= 70 and RSI70[i] == False: 
+                            if now_rsi >= 70 and RSI70[i] == False and upbit.get_avg_buy_price(coinlist[i]) < current_price: 
                                 print(coinlist[i],"RSI 70 Check")
                                 print(coinlist[i],"SELL")
                                 sell(coinlist[i])            
@@ -177,7 +182,12 @@ while(True):
                             print([i], coinlist[i],"  RSI :", now_rsi) 
                             # print("현재시간: ", datetime.datetime.now()) 
                             print()
-                                                    
+
+
+                            if upbit.get_avg_buy_price(coinlist[i])*1.025 < current_price and upbit.get_balance(coinlist[i]) > 0.00008:
+                                upbit.sell_market_order(coinlist[i], upbit.get_balance(coinlist[i]))   
+                                print("2.5% 익절 완료") 
+
                             if now_rsi <= 28 : 
                                 RSI28[i] = True
                                 print(coinlist[i],"RSI 28 Check")
@@ -187,7 +197,7 @@ while(True):
                                 buy(coinlist[i])                        
                                 RSI28[i] = False                                                                               
                             
-                            if now_rsi >= 65 and RSI70[i] == False: 
+                            if now_rsi >= 65 and RSI70[i] == False and upbit.get_avg_buy_price(coinlist[i]) < current_price: 
                                 print(coinlist[i],"RSI 70 Check")
                                 print(coinlist[i],"SELL")
                                 sell(coinlist[i])            
