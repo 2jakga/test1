@@ -164,10 +164,10 @@ while(True):
 
             if data is not None:                    
                 now_rsi = rsi(data, 14).iloc[-1]
-                
+                print([i], coinlist[i],"  RSI :", now_rsi)
+            
                 if target_price1 < current_price :
-                    print([i], coinlist[i],"  RSI :", now_rsi) 
-                    
+                
                     if  ma15 < current_price :  #안전한 상승장                               
                         
                         if now_rsi < 35 and RSI70[i] == False : 
