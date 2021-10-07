@@ -25,12 +25,6 @@ def get_ma15(ticker):
     ma15 = df['close'].rolling(15).mean().iloc[-1]
     return ma15
 
-def get_ma7(ticker):
-    """7일 이동 평균선 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="day", count=7)
-    ma7 = df['close'].rolling(7).mean().iloc[-1]
-    return ma7
-
 def get_balance(ticker):
     """잔고 조회"""
     balances = upbit.get_balances()
@@ -57,7 +51,7 @@ def rsi(ohlc: pandas.DataFrame, period: int = 14):
 access = "m0uV5VEpMw9uNrvDlxUXvahxvYYG2O3KGNW3vRsJ"
 secret = "iRmSf6ovpVTpSzPnyxDLYEMcvKYmbsPo9QE8gQuw"
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start - V9 211007 ")
+print("autotrade start - V7 210919 ")
 
 
 print("보유 현금 :",get_balance("KRW"))
@@ -89,33 +83,7 @@ for i in range(len(coinlist)):
   RSI33C.append(0)
 
 
-# 시장가 매수 함수 
-def buy(coin): 
-    money = get_balance("KRW") 
-    if money < 20000 : 
-        res = upbit.buy_market_order(coin, money) 
-    elif money < 50000: 
-        res = upbit.buy_market_order(coin, money*0.4) 
-    elif money < 100000 : 
-        res = upbit.buy_market_order(coin, money*0.3) 
-    else : 
-        res = upbit.buy_market_order(coin, money*0.2) 
-    return 
 
-# 시장가 매도 함수 
-def sell(coin): 
-    amount = upbit.get_balance(coin) 
-    cur_price = get_current_price(coin)
-    total = amount * cur_price 
-    if total < 20000 : 
-        res = upbit.sell_market_order(coin, amount) 
-    elif total < 50000: 
-        res = upbit.sell_market_order(coin, amount*0.4) 
-    elif total < 100000: 
-        res = upbit.sell_market_order(coin, amount*0.3) 
-    else : 
-        res = upbit.sell_market_order(coin, amount*0.4) 
-    return
 
 # 시장가 매수 함수 1
 def buy1(coin): 
@@ -156,8 +124,7 @@ while(True):
 
         if start_time < now < end_time - datetime.timedelta(seconds=60):
             
-            target_price1 = get_target_price(coinlist[i], 0.1)
-            target_price2 = get_target_price(coinlist[i], 0.001)
+            target_price1 = get_target_price(coinlist[i], 0.1)            
             ma15 = get_ma15(coinlist[i])
             # ma7 = get_ma7(coinlist[i])
             current_price = get_current_price(coinlist[i]) 
@@ -175,20 +142,20 @@ while(True):
                             print()                                      
                             RSI70[i] = True     
                    
-                        if now_rsi <= 28 and upbit.get_avg_buy_price(coinlist[i])*0.98 > current_price and upbit.get_balance(coinlist[i]) > 0.00008:   
+                        if now_rsi <= 28 and upbit.get_avg_buy_price(coinlist[i])*0.98 > current_price :   
                             RSI70[i] = False
                             buy2(coinlist[i])
                             print([i],coinlist[i],"water+") 
                         
                         
-                        if upbit.get_avg_buy_price(coinlist[i])*0.95 > current_price and upbit.get_balance(coinlist[i]) > 0.00008:   
+                        if upbit.get_avg_buy_price(coinlist[i])*0.95 > current_price :   
                             sell1(coinlist[i]) #-5% 손절
                             print([i],coinlist[i],"Die")                    
                                                               
         else :
             upbit.sell_market_order(coinlist[i], upbit.get_balance(coinlist[i]))    
 
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 
